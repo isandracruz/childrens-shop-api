@@ -1,24 +1,73 @@
 import { Request, Response, NextFunction } from "express";
+import { UserService } from "../services/user.service";
 
-const getUsers = (req: Request, res: Response, next: NextFunction): void =>  {
-    res.send('Show info of all users');
+const userService = new UserService();
+
+const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
+    try {     
+        const users = await userService.getUsers(req);
+        res.json(users);
+    } catch (error) {
+        console.log(error);
+        next();
+    }     
 }
 
-const getUserById = (req: Request, res: Response, next: NextFunction): void =>  {
-    res.send(`Show info of user ${req.params.id}`);
+const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
+    try {     
+        const userData = await userService.getUserById(req);
+        
+        userData
+        ? res.status(200).json(userData)
+        : res.status(404).json({ 
+            error: 'User not found'
+        });
+    } catch (error) {
+        console.log(error);
+        next();
+    }     
 }
 
-const createUser = (req: Request, res: Response, next: NextFunction): void =>  {
-    const name = req.body?.name || 'default'
-    res.send(`Create user with name ${name}`);
+const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
+    try {     
+        const createdUser = await userService.createUser(req);        
+        res.json(createdUser);
+    } catch (error) {
+        console.log(error);
+        next();
+    } 
 }
 
-const updateUser = (req: Request, res: Response, next: NextFunction): void =>  {
-    res.send(`Update user with id ${req.params.id}`);
+const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
+    try {     
+        const updatedUser = await userService.updateUser(req);
+        
+        updatedUser
+        ? res.status(200).json(updatedUser)
+        : res.status(404).json({ 
+            error: 'User not found'
+        });
+    } catch (error) {
+        console.log(error);
+        next();
+    } 
 }
 
-const deleteUser = (req: Request, res: Response, next: NextFunction): void =>  {
-    res.send(`Delete user with id ${req.params.id}`);
+const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
+    try {     
+        const result = await userService.deleteUser(req);
+        
+        result
+        ? res.status(200).json({ 
+            success: true
+        })
+        : res.status(404).json({ 
+            error: 'User not found'
+        });
+    } catch (error) {
+        console.log(error);
+        next();
+    } 
 }
 
 export { 
