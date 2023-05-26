@@ -1,26 +1,22 @@
 import express from 'express';
+import { 
+    getUsers,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser
+} from '../controllers/users.controller';
 
 const userRoutes = express.Router();
 
-userRoutes.get('/users', (req, res) => {
-    res.send('Show info of all users');
-});
+userRoutes.get('/users/', getUsers);
 
-userRoutes.get('/users/:id', (req, res) => {
-    res.send(`Show info of user ${req.params.id}`);
-});
+userRoutes.get('/users/:id', getUserById);
 
-userRoutes.post('/users/create', (req, res) => { 
-    const name = req.body?.name || 'default'
-    res.send(`Create user with name ${name}`);
-});
+userRoutes.post('/users', createUser);
 
-userRoutes.put('/users/update/:id', (req, res) => {    
-    res.send(`Update user with id ${req.params.id}`);
-});
+userRoutes.put('/users/:id', updateUser);
 
-userRoutes.delete('/users/delete/:id', (req, res) => {    
-    res.send(`Delete user with id ${req.params.id}`);
-});
+userRoutes.delete('/users/:id', deleteUser);
 
 export default userRoutes;
