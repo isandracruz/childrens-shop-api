@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { UserClass } from "../classes/user.class";
+import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const userSchema = new mongoose.Schema({
     name: { 
@@ -25,6 +26,7 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+userSchema.plugin(aggregatePaginate);
 userSchema.loadClass(UserClass);
 
 export { userSchema };

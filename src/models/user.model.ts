@@ -4,7 +4,6 @@ import { UserClass } from "../classes/user.class";
 
 export type UserDocument = UserClass & Document;
 
-const User = mongoose.model<UserDocument>("User", userSchema);
+const userModel = mongoose.model("Users", userSchema, 'users');
 
-export { User };
-
+export { userModel };

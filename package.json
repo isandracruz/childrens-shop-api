@@ -10,12 +10,11 @@
     "dev": "tsc-watch --onSuccess \"node ./dist/server.js\""
   },
   "keywords": [],
-  "author": "",
+  "author": "Isandra Cruz",
   "license": "ISC",
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",
-    "@types/mongoose": "^5.11.97",
     "@types/mongoose-aggregate-paginate-v2": "^1.0.9",
     "@types/node": "^20.2.4",
     "rimraf": "^5.0.1",

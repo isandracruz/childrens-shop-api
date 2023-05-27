@@ -4,9 +4,9 @@ import { UserService } from "../services/user.service";
 const userService = new UserService();
 
 const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
-    try {     
-        const users = await userService.getUsers(req);
-        res.json(users);
+    try {   
+        const result = await userService.getUsers(req);
+        res.json(result);
     } catch (error) {
         console.log(error);
         next();
