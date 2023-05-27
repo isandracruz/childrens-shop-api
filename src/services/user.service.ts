@@ -1,19 +1,15 @@
 import { Request } from 'express';
 import { User, UserDocument } from '../models/user.model';
-import { Types } from 'mongoose';
 
-export class UserService {    
+export class UserService { 
     
     async getUsers(req: Request): Promise<UserDocument[]> {
         return await User.find({});
     }
     
     async getUserById (req: Request): Promise<UserDocument | null> {
-        const userId = req.params.id;
-        if (Types.ObjectId.isValid(userId)) {
-            return await User.findById(userId);
-        }        
-        return null;        
+        const userId = req.params.id;        
+        return await User.findById(userId);              
     }
     
     async createUser(req: Request): Promise<UserDocument> {
@@ -22,20 +18,13 @@ export class UserService {
     }
     
     async updateUser(req: Request): Promise<UserDocument | null> {
-        const userId = req.params.id;        
-        if (Types.ObjectId.isValid(userId)) {            
-            return User.findByIdAndUpdate(userId, req.body, {new: true});
-        }        
-        return null;        
+        const userId = req.params.id;  
+        return User.findByIdAndUpdate(userId, req.body, {new: true});             
     }
     
     async deleteUser(req: Request): Promise<void | null>{
-        const userId = req.params.id;        
-        if (Types.ObjectId.isValid(userId)) {            
-            return User.findByIdAndRemove(userId);
-        }        
-        return null;         
+        const userId = req.params.id;   
+        return User.findByIdAndRemove(userId);                 
     }
-
 
 }
