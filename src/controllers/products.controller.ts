@@ -14,6 +14,18 @@ const getProducts = async (req: Request, res: Response, next: NextFunction): Pro
     }     
 }
 
+const getQuantityOfProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
+    try {   
+        const result = await productService.getQuantityOfProducts(req);
+        res.json({
+            quantityOfProducts: result
+        });
+    } catch (error) {
+        console.log(error);
+        next();
+    }     
+}
+
 const getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
     try {     
         const ProductData = await productService.getProductById(req);
@@ -68,11 +80,14 @@ const deleteProduct = async (req: Request, res: Response, next: NextFunction): P
     } catch (error) {
         console.log(error);
         next();
-    } 
+    }     
 }
+
+
 
 export { 
     getProducts,
+    getQuantityOfProducts,
     getProductById,
     createProduct,
     updateProduct,

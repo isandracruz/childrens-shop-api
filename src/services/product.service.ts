@@ -5,8 +5,7 @@ import moment from 'moment';
 
 export class ProductService {     
     
-    async getProducts(req: Request): Promise<AggregatePaginateResult<ProductDocument>> {
-             
+    async getProducts(req: Request): Promise<AggregatePaginateResult<ProductDocument>> {             
         const page = req.query.page ? Number(req.query.page) : 1;
         const limit = req.query.pageSize ? Number(req.query.pageSize) : 10;
 
@@ -29,6 +28,16 @@ export class ProductService {
         ]);  
         
         return await productModel.aggregatePaginate(aggregate, options);           
+    }
+
+    async getQuantityOfProducts(req: Request) {
+        const $match = this.getProductMatchQuery(req);        
+              
+        const products = await productModel.aggregate([                                      
+            { $match }
+        ]);
+
+        return products.length;
     }
 
     getProductMatchQuery(req: Request) {
