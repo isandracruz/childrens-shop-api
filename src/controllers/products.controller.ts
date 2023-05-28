@@ -27,8 +27,9 @@ const getQuantityOfProducts = async (req: Request, res: Response, next: NextFunc
 }
 
 const getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
-    try {     
-        const ProductData = await productService.getProductById(req);
+    try {    
+        const userId = req.params.id; 
+        const ProductData = await productService.getProductById(userId);
         
         ProductData
         ? res.status(200).json(ProductData)
@@ -42,7 +43,7 @@ const getProductById = async (req: Request, res: Response, next: NextFunction): 
 }
 
 const createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
-    try {     
+    try { 
         const createdProduct = await productService.createProduct(req);        
         res.json(createdProduct);
     } catch (error) {
@@ -82,8 +83,6 @@ const deleteProduct = async (req: Request, res: Response, next: NextFunction): P
         next();
     }     
 }
-
-
 
 export { 
     getProducts,

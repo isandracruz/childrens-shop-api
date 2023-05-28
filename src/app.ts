@@ -3,6 +3,7 @@ import config from './config/config';
 import indexRoutes from './routes/index.route';
 import userRoutes from './routes/user.route';
 import productRoutes from './routes/product.route';
+import orderRoutes from './routes/order.route';
 
 const app = express();
 
@@ -15,5 +16,6 @@ app.use(express.json());
 app.use(indexRoutes);
 app.use(userRoutes);
 app.use(productRoutes);
+app.use(orderRoutes);
 
 export default app;

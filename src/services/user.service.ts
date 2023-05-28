@@ -74,11 +74,11 @@ export class UserService {
     
     async updateUser(req: Request): Promise<UserDocument | null> {
         const userId = req.params.id;  
-        return userModel.findByIdAndUpdate(userId, req.body, {new: true});             
+        return await userModel.findByIdAndUpdate(userId, req.body, {new: true});             
     }
     
     async deleteUser(req: Request): Promise<void | null>{
         const userId = req.params.id;   
-        return userModel.findByIdAndRemove(userId);                 
+        return await userModel.findByIdAndRemove(userId);                 
     }
 }

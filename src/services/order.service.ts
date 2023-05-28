@@ -1,11 +1,13 @@
 import { Request } from 'express';
 import mongoose, { AggregatePaginateResult } from 'mongoose';
-import { ProductDocument, productModel } from '../models/product.model';
 import moment from 'moment';
+import { OrderDocument, orderModel } from '../models/order.model';
+import { OrderInterface } from '../interfaces/order.interface';
+import { ProductDocument } from '../models/product.model';
 
-export class ProductService {     
+export class OrderService {     
     
-    async getProducts(req: Request): Promise<AggregatePaginateResult<ProductDocument>> {             
+    async getOrders(req: Request): Promise<AggregatePaginateResult<OrderDocument>> {             
         const page = req.query.page ? Number(req.query.page) : 1;
         const limit = req.query.pageSize ? Number(req.query.pageSize) : 10;
 
@@ -21,23 +23,13 @@ export class ProductService {
             }           
         };
 
-        const $match = this.getProductMatchQuery(req);        
+        const $match = {};        
               
-        const aggregate = productModel.aggregate([                                      
-            { $match }
+        const aggregate = orderModel.aggregate([                                      
+            { $match },
         ]);  
         
-        return await productModel.aggregatePaginate(aggregate, options);           
-    }
-
-    async getQuantityOfProducts(req: Request) {
-        const $match = this.getProductMatchQuery(req);        
-              
-        const products = await productModel.aggregate([                                      
-            { $match }
-        ]);
-
-        return products.length;
+        return await orderModel.aggregatePaginate(aggregate, options);           
     }
 
     getProductMatchQuery(req: Request) {
@@ -108,31 +100,18 @@ export class ProductService {
     }
     
     
-    async getProductById (userId: string): Promise<ProductDocument | null> {                
-        return await productModel.findById(userId);              
-    }   
-    
-    async createProduct(req: Request): Promise<ProductDocument> {        
-        const newProduct = new productModel(req.body);
-        return await newProduct.save();             
+    async getOrderById (orderId: string): Promise<OrderDocument | null> {              
+        return await orderModel.findById(orderId);              
     }
     
-    async updateProduct(req: Request): Promise<ProductDocument | null> {
-        const productId = req.params.id;  
-        return await productModel.findByIdAndUpdate(productId, req.body, { new: true });             
+    async createOrder(product: ProductDocument): Promise<OrderDocument | null> { 
+        const orderData: OrderInterface = {
+            price: product.price, 
+            amount: product.price,
+            quantity: 1,                
+            productId: String(product._id)
+        } 
+        const newOrder = new orderModel(orderData);
+        return await newOrder.save();                           
     }
-
-    async updateProductStock(productId: string, quantity: number): Promise<void> {
-        const product = await this.getProductById(productId);
-        if (product && product.inStock > 0) {
-            const newStock = product.inStock - quantity;
-            await productModel.findByIdAndUpdate(productId, { inStock: newStock });    
-        }                    
-    }
-      
-    async deleteProduct(req: Request): Promise<void | null>{
-        const productId = req.params.id;   
-        return await productModel.findByIdAndRemove(productId);                 
-    }
-    
 }
