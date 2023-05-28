@@ -40,6 +40,33 @@ export class ProductService {
         return products.length;
     }
 
+    async getOutOfStockProducts(req: Request): Promise<AggregatePaginateResult<ProductDocument>> {
+        const page = req.query.page ? Number(req.query.page) : 1;
+        const limit = req.query.pageSize ? Number(req.query.pageSize) : 10;
+
+        const options = {
+            page: page,
+            limit: limit,
+            customLabels: {
+                totalDocs: 'total',
+                docs: 'data',
+                limit: 'per_page',
+                page: 'page',
+                totalPages: 'total_pages',
+            }           
+        };
+
+        const aggregate = productModel.aggregate([                                      
+            { 
+                $match: {
+                    inStock: 0
+                } 
+            }
+        ]);
+
+        return await productModel.aggregatePaginate(aggregate, options); 
+    }
+
     getProductMatchQuery(req: Request) {
         let matchQuery = [];        
 
@@ -102,8 +129,7 @@ export class ProductService {
             }); 
 
         return matchQuery.length > 0 ? { $and: matchQuery } : {};
-    }
-    
+    }    
     
     async getProductById (userId: string): Promise<ProductDocument | null> {                
         return await productModel.findById(userId);              

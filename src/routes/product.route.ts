@@ -5,7 +5,8 @@ import {
     createProduct,
     updateProduct,
     deleteProduct,
-    getQuantityOfProducts
+    getQuantityOfProducts,
+    getOutOfStockProducts
 } from '../controllers/products.controller';
 import validateMongoDBId from '../middlewares/validateMongoId.middleware';
 
@@ -14,6 +15,8 @@ const productRoutes = express.Router();
 productRoutes.get('/products/', getProducts);
 
 productRoutes.get('/products/get-quantity-of-products', getQuantityOfProducts);
+
+productRoutes.get('/products/get-out-of-stock-products', getOutOfStockProducts);
 
 productRoutes.get('/products/:id', validateMongoDBId, getProductById);
 

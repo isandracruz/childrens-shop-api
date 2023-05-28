@@ -26,6 +26,16 @@ const getQuantityOfProducts = async (req: Request, res: Response, next: NextFunc
     }     
 }
 
+const getOutOfStockProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
+    try {   
+        const outOfStockProducts = await productService.getOutOfStockProducts(req);
+        res.json(outOfStockProducts);
+    } catch (error) {
+        console.log(error);
+        next();
+    }     
+}
+
 const getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
     try {    
         const userId = req.params.id; 
@@ -87,6 +97,7 @@ const deleteProduct = async (req: Request, res: Response, next: NextFunction): P
 export { 
     getProducts,
     getQuantityOfProducts,
+    getOutOfStockProducts,
     getProductById,
     createProduct,
     updateProduct,
