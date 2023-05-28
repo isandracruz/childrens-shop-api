@@ -6,15 +6,15 @@ export class UserService {
     getUserMatchQuery(req: Request) {
         let matchQuery = []; 
         
-        if (req.query.name) {
-            const nameQuery = String(req.query.name)
+        if (req.query.username) {
+            const usernameQuery = String(req.query.username)
             .replace(/a/g, '[a,á,à,ä,â]')
             .replace(/e/g, '[e,é,ë,è]')
             .replace(/i/g, '[i,í,ï,ì]')
             .replace(/o/g, '[o,ó,ö,ò]')
             .replace(/u/g, '[u,ü,ú,ù]');           
 
-            matchQuery.push({ name: {$regex: new RegExp(`.*${nameQuery}.*`, 'gi')} });
+            matchQuery.push({ username: {$regex: new RegExp(`.*${usernameQuery}.*`, 'gi')} });
         } 
 
         if (req.query.email) {
@@ -62,13 +62,12 @@ export class UserService {
     async getUserById (req: Request): Promise<UserDocument | null> {
         const userId = req.params.id;        
         return await userModel.findById(userId);              
-    }
+    } 
     
-    async createUser(req: Request): Promise<UserDocument> {
-        const newUser = new userModel(req.body);
-        return await newUser.save();             
-    }
-    
+    async getUserByEmail(email: string): Promise<UserDocument | null> {               
+        return await userModel.findOne({email: email});              
+    } 
+      
     async updateUser(req: Request): Promise<UserDocument | null> {
         const userId = req.params.id;  
         return await userModel.findByIdAndUpdate(userId, req.body, {new: true});             

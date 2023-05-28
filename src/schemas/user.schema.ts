@@ -3,7 +3,7 @@ import { UserClass } from "../classes/user.class";
 import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const userSchema = new mongoose.Schema({
-    name: { 
+    username: { 
         type: String,
         require: false
     },   

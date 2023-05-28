@@ -28,16 +28,6 @@ const getUserById = async (req: Request, res: Response, next: NextFunction): Pro
     }     
 }
 
-const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
-    try {     
-        const createdUser = await userService.createUser(req);        
-        res.json(createdUser);
-    } catch (error) {
-        console.log(error);
-        next();
-    } 
-}
-
 const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
     try {     
         const updatedUser = await userService.updateUser(req);
@@ -73,7 +63,6 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction): Prom
 export { 
     getUsers,
     getUserById,
-    createUser,
     updateUser,
     deleteUser
 };

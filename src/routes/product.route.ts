@@ -9,21 +9,22 @@ import {
     getOutOfStockProducts
 } from '../controllers/products.controller';
 import validateMongoDBId from '../middlewares/validateMongoId.middleware';
+import { checkAuth, checkRoleAuth } from '../middlewares/auth.middleware';
 
 const productRoutes = express.Router();
 
-productRoutes.get('/products/', getProducts);
+productRoutes.get('/products/', checkAuth, getProducts);
 
-productRoutes.get('/products/get-quantity-of-products', getQuantityOfProducts);
+productRoutes.get('/products/get-quantity-of-products', checkAuth, getQuantityOfProducts);
 
-productRoutes.get('/products/get-out-of-stock-products', getOutOfStockProducts);
+productRoutes.get('/products/get-out-of-stock-products', checkAuth, getOutOfStockProducts);
 
-productRoutes.get('/products/:id', validateMongoDBId, getProductById);
+productRoutes.get('/products/:id', checkAuth, validateMongoDBId, getProductById);
 
-productRoutes.post('/products', createProduct);
+productRoutes.post('/products', checkRoleAuth(['administrator', 'editor']), createProduct);
 
-productRoutes.put('/products/:id', validateMongoDBId, updateProduct);
+productRoutes.put('/products/:id', checkRoleAuth(['administrator', 'editor']), validateMongoDBId, updateProduct);
 
-productRoutes.delete('/products/:id', validateMongoDBId, deleteProduct);
+productRoutes.delete('/products/:id', checkRoleAuth(['administrator', 'editor']), validateMongoDBId, deleteProduct);
 
 export default productRoutes;

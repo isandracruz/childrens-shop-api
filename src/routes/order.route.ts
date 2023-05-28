@@ -7,17 +7,18 @@ import {
     createOrder
 } from '../controllers/orders.controller';
 import validateMongoDBId from '../middlewares/validateMongoId.middleware';
+import { checkAuth } from '../middlewares/auth.middleware';
 
 const orderRoutes = express.Router();
 
-orderRoutes.get('/orders/', getOrders);
+orderRoutes.get('/orders/', checkAuth, getOrders);
 
-orderRoutes.get('/orders/get-sales-report', getSalesReport);
+orderRoutes.get('/orders/get-sales-report', checkAuth, getSalesReport);
 
-orderRoutes.get('/orders/get-total-amount-of-sales', getTotalAmountOfSales);
+orderRoutes.get('/orders/get-total-amount-of-sales', checkAuth, getTotalAmountOfSales);
 
-orderRoutes.get('/orders/:id', validateMongoDBId, getOrderById);
+orderRoutes.get('/orders/:id', checkAuth, validateMongoDBId, getOrderById);
 
-orderRoutes.post('/orders', createOrder);
+orderRoutes.post('/orders', checkAuth, createOrder);
 
 export default orderRoutes;
