@@ -1,14 +1,11 @@
 import { Request } from 'express';
 import { UserDocument, userModel } from '../models/user.model';
-import mongoose, { AggregatePaginateResult } from 'mongoose';
+import { AggregatePaginateResult } from 'mongoose';
 
 export class UserService { 
     getUserMatchQuery(req: Request) {
         let matchQuery = []; 
-
-        if (req.query.userId && mongoose.Types.ObjectId.isValid(String(req.query.userId))) 
-            matchQuery.push({ _id: new mongoose.Types.ObjectId(String(req.query.userId))});
-
+        
         if (req.query.name) {
             const nameQuery = String(req.query.name)
             .replace(/a/g, '[a,á,à,ä,â]')

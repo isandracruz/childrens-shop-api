@@ -23,63 +23,102 @@ export class OrderService {
             }           
         };
 
-        const $match = {};        
+        const $match = this.getOrderMatchQuery(req);        
               
         const aggregate = orderModel.aggregate([                                      
             { $match },
+            {
+                $lookup: {
+                  from: "products",
+                  localField: "productId",
+                  foreignField: "_id",
+                  as: "product",
+                } 
+            },
+            {
+                $unwind: {
+                    path: "$product"
+                },
+            },
+            {
+                $addFields: {
+                    productName: "$product.name"
+                }
+            },
+            {
+                $unset: ["product"]
+            }
         ]);  
         
         return await orderModel.aggregatePaginate(aggregate, options);           
     }
 
-    getProductMatchQuery(req: Request) {
-        let matchQuery = []; 
+    async getSalesReport(req: Request){
+        const page = req.query.page ? Number(req.query.page) : 1;
+        const limit = req.query.pageSize ? Number(req.query.pageSize) : 10;
 
-        if (req.query.productId && mongoose.Types.ObjectId.isValid(String(req.query.productId))) 
-            matchQuery.push({ _id: new mongoose.Types.ObjectId(String(req.query.productId))});
+        const options = {
+            page: page,
+            limit: limit,
+            customLabels: {
+                totalDocs: 'total',
+                docs: 'data',
+                limit: 'per_page',
+                page: 'page',
+                totalPages: 'total_pages',
+            }           
+        };
 
-        if (req.query.name) {
-            const nameQuery = String(req.query.name)
-            .replace(/a/g, '[a,á,à,ä,â]')
-            .replace(/e/g, '[e,é,ë,è]')
-            .replace(/i/g, '[i,í,ï,ì]')
-            .replace(/o/g, '[o,ó,ö,ò]')
-            .replace(/u/g, '[u,ü,ú,ù]');           
+        const $match = this.getOrderMatchQuery(req);        
+              
+        const aggregate = orderModel.aggregate([                                      
+            { $match },
+            {
+                $lookup: {
+                  from: "products",
+                  localField: "productId",
+                  foreignField: "_id",
+                  as: "product",
+                } 
+            },
+            {
+                $unwind: {
+                    path: "$product"
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                      productName: "$product.name",                      
+                      inStock: "$product.inStock"                      
+                    },
+                    totalQuantity: { $sum: "$quantity" },
+                    totalAmount: { 
+                      $sum: { 
+                        $multiply: [ "$price", "$quantity" ] 
+                      } 
+                    },
+                }
+            },
+            {
+                $replaceRoot: { newRoot: { $mergeObjects:  [ "$_id", "$$ROOT" ] }}
+            },
+            {
+                $unset: ['_id']
+            }
+        ]);  
+        
+        return await orderModel.aggregatePaginate(aggregate, options);           
+    }
 
-            matchQuery.push({ name: {$regex: new RegExp(`.*${nameQuery}.*`, 'gi')} });
+    getOrderMatchQuery(req: Request) {
+        let matchQuery = [];               
+                  
+        if (req.query.productId) {
+            mongoose.Types.ObjectId.isValid(String(req.query.productId))
+            ? matchQuery.push({ productId: new mongoose.Types.ObjectId(String(req.query.productId))})
+            : matchQuery.push({ productId: null});
         } 
-
-        if (req.query.price) matchQuery.push({ price: Number(req.query.price)});
-        if (req.query.inStock) matchQuery.push({ inStock: Number(req.query.inStock)});
-
-        if (req.query.categories) {
-            const categoriesQuery = String(req.query.categories).split(', ');
-            matchQuery.push({ categories: { $in: categoriesQuery}});
-        }
-        if (req.query.tags) {
-            const tagsQuery = String(req.query.tags).split(', ');
-            matchQuery.push({ categories: { $in: tagsQuery}});
-        }
-        if (req.query.description) {
-            const descriptionQuery = String(req.query.description)
-            .replace(/a/g, '[a,á,à,ä,â]')
-            .replace(/e/g, '[e,é,ë,è]')
-            .replace(/i/g, '[i,í,ï,ì]')
-            .replace(/o/g, '[o,ó,ö,ò]')
-            .replace(/u/g, '[u,ü,ú,ù]');           
-
-            matchQuery.push({ description: {$regex: new RegExp(`.*${descriptionQuery}.*`, 'gi')} });
-        } 
-        if (req.query.info) {
-            const infoQuery = String(req.query.info)
-            .replace(/a/g, '[a,á,à,ä,â]')
-            .replace(/e/g, '[e,é,ë,è]')
-            .replace(/i/g, '[i,í,ï,ì]')
-            .replace(/o/g, '[o,ó,ö,ò]')
-            .replace(/u/g, '[u,ü,ú,ù]');           
-
-            matchQuery.push({ info: {$regex: new RegExp(`.*${infoQuery}.*`, 'gi')} });
-        }
 
         if (req.query.createdAtStart)
             matchQuery.push({
@@ -88,6 +127,7 @@ export class OrderService {
                         .startOf('date').format())
                 }
             });
+
         if (req.query.createdAtEnd) 
             matchQuery.push({
                 createdAt: {
@@ -95,6 +135,8 @@ export class OrderService {
                         .endOf('date').format())
                 }
             }); 
+
+        console.log(matchQuery)
 
         return matchQuery.length > 0 ? { $and: matchQuery } : {};
     }

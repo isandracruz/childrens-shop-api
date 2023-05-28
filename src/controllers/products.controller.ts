@@ -29,10 +29,10 @@ const getQuantityOfProducts = async (req: Request, res: Response, next: NextFunc
 const getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
     try {    
         const userId = req.params.id; 
-        const ProductData = await productService.getProductById(userId);
+        const product = await productService.getProductById(userId);
         
-        ProductData
-        ? res.status(200).json(ProductData)
+        product
+        ? res.status(200).json(product)
         : res.status(404).json({ 
             error: 'Product not found'
         });

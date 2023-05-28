@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import mongoose, { AggregatePaginateResult } from 'mongoose';
+import { AggregatePaginateResult } from 'mongoose';
 import { ProductDocument, productModel } from '../models/product.model';
 import moment from 'moment';
 
@@ -41,10 +41,7 @@ export class ProductService {
     }
 
     getProductMatchQuery(req: Request) {
-        let matchQuery = []; 
-
-        if (req.query.productId && mongoose.Types.ObjectId.isValid(String(req.query.productId))) 
-            matchQuery.push({ _id: new mongoose.Types.ObjectId(String(req.query.productId))});
+        let matchQuery = [];        
 
         if (req.query.name) {
             const nameQuery = String(req.query.name)
