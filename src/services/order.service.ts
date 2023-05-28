@@ -21,25 +21,10 @@ export class OrderService {
                 page: 'page',
                 totalPages: 'total_pages',
             }           
-        };
-
-        const $match = this.getOrderMatchQuery(req);        
+        };            
               
         const aggregate = orderModel.aggregate([                                      
-            { $match },
-            {
-                $lookup: {
-                  from: "products",
-                  localField: "productId",
-                  foreignField: "_id",
-                  as: "product",
-                } 
-            },
-            {
-                $unwind: {
-                    path: "$product"
-                },
-            },
+            ...this.getOrderAggregateBasicQuery(req),
             {
                 $addFields: {
                     productName: "$product.name"
@@ -67,25 +52,10 @@ export class OrderService {
                 page: 'page',
                 totalPages: 'total_pages',
             }           
-        };
-
-        const $match = this.getOrderMatchQuery(req);        
+        };             
               
         const aggregate = orderModel.aggregate([                                      
-            { $match },
-            {
-                $lookup: {
-                  from: "products",
-                  localField: "productId",
-                  foreignField: "_id",
-                  as: "product",
-                } 
-            },
-            {
-                $unwind: {
-                    path: "$product"
-                },
-            },
+            ...this.getOrderAggregateBasicQuery(req),
             {
                 $group: {
                     _id: {
@@ -109,6 +79,28 @@ export class OrderService {
         ]);  
         
         return await orderModel.aggregatePaginate(aggregate, options);           
+    }
+
+    async getTotalAmountOfSales(req: Request) {
+        const $match = this.getOrderMatchQuery(req);
+        const aggregate = await orderModel.aggregate([                                      
+            { $match },            
+            {
+                $group: {
+                    _id: null,                    
+                    totalAmountOfSales: { 
+                      $sum: { 
+                        $multiply: [ "$price", "$quantity" ] 
+                      } 
+                    },
+                }
+            },            
+            {
+                $unset: ['_id']
+            }
+        ]); 
+
+        return aggregate[0];
     }
 
     getOrderMatchQuery(req: Request) {
@@ -136,9 +128,27 @@ export class OrderService {
                 }
             }); 
 
-        console.log(matchQuery)
-
         return matchQuery.length > 0 ? { $and: matchQuery } : {};
+    }
+
+    getOrderAggregateBasicQuery(req: Request){
+        const $match = this.getOrderMatchQuery(req);
+        return [
+            { $match },
+            {
+                $lookup: {
+                  from: "products",
+                  localField: "productId",
+                  foreignField: "_id",
+                  as: "product",
+                } 
+            },
+            {
+                $unwind: {
+                    path: "$product"
+                },
+            },
+        ];
     }
     
     

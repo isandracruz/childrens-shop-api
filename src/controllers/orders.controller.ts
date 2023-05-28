@@ -41,6 +41,16 @@ const getSalesReport = async (req: Request, res: Response, next: NextFunction): 
     }     
 }
 
+const getTotalAmountOfSales = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
+    try {   
+        const totalAmountOfSales = await orderService.getTotalAmountOfSales(req);
+        res.json(totalAmountOfSales);
+    } catch (error) {
+        console.log(error);
+        next();
+    }     
+}
+
 const createOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
     try {  
         if (req.body.productId && Types.ObjectId.isValid(req.body.productId)){
@@ -71,5 +81,6 @@ export {
     getOrders,    
     getOrderById,
     getSalesReport,
+    getTotalAmountOfSales,
     createOrder,    
 };
