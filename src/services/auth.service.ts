@@ -1,5 +1,5 @@
-import { Request } from 'express';
-import { userModel } from '../models/user.model';
+import { Request, Response } from 'express';
+import { UserDocument, userModel } from '../models/user.model';
 import { UserClass } from '../classes/user.class';
 import { UserInterface } from '../interfaces/user.interface';
 import { UserService } from './user.service';
@@ -9,10 +9,14 @@ import jwt from 'jsonwebtoken';
 
 export class AuthService {     
     
-    async signUp(req: Request) {
+    async signUp(req: Request, res: Response): Promise<UserDocument> {
+        const userExists = await userModel.exists({ email: req.body.email });
+        if (userExists) {
+            throw new Error('The user exists');                
+        } 
         const userData: UserInterface = new UserClass(req.body);
         const newUser = new userModel(userData);
-        return await newUser.save(); 
+        return await newUser.save();
     }
 
     async signIn(req: Request): Promise<object | null> {

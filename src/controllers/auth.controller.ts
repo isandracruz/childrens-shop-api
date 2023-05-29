@@ -1,25 +1,43 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthService } from "../services/auth.service";
+import { validationResult } from "express-validator";
 
 const authService = new AuthService();
 
 const signUp = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
-    try {   
-        await authService.signUp(req);       
-        res.send({ message: "User registered successfully!" });
-    } catch (error) {
-        console.log(error);
-        next();
+    try {
+        const errors = validationResult(req);        
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+        } else {
+            const createduser = await authService.signUp(req, res);  
+            if (!createduser){
+                throw new Error("User registration failed");
+            }     
+            res.send({ message: "User registered successfully!" });
+        }        
+    } catch (error: any) {
+        res.status(500).json({
+            error: error.message
+        });
     }     
 }
 
 const signIn = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
-    try {           
-        const result = await authService.signIn(req);
+    try {   
+        const errors = validationResult(req);
+        console.log(errors)   
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+        } else {
+            const result = await authService.signIn(req);
 
-        result
-        ? res.json(result)
-        : res.status(400).json({ error: 'Request failed'});      
+            if (result) {
+                res.json(result)
+            } else {
+                res.status(400).json({ error: 'Request failed'});
+            }             
+        }     
     } catch (error) {
         console.log(error);
         next();

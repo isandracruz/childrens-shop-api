@@ -9,9 +9,10 @@ const getOrders = async (req: Request, res: Response, next: NextFunction): Promi
     try {   
         const result = await orderService.getOrders(req);
         res.json(result);
-    } catch (error) {
-        console.log(error);
-        next();
+    } catch (error: any) {
+        res.status(500).json({
+            error: error.message
+        });
     }     
 }
 
@@ -25,9 +26,10 @@ const getOrderById = async (req: Request, res: Response, next: NextFunction): Pr
         : res.status(404).json({ 
             error: 'Product not found'
         });
-    } catch (error) {
-        console.log(error);
-        next();
+    } catch (error: any) {
+        res.status(500).json({
+            error: error.message
+        });
     }     
 }
 
@@ -35,20 +37,22 @@ const getSalesReport = async (req: Request, res: Response, next: NextFunction): 
     try {   
         const salesReport = await orderService.getSalesReport(req);
         res.json(salesReport);
-    } catch (error) {
-        console.log(error);
-        next();
-    }     
+    } catch (error: any) {
+        res.status(500).json({
+            error: error.message
+        });
+    }    
 }
 
 const getTotalAmountOfSales = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
     try {   
         const totalAmountOfSales = await orderService.getTotalAmountOfSales(req);
         res.json(totalAmountOfSales);
-    } catch (error) {
-        console.log(error);
-        next();
-    }     
+    } catch (error: any) {
+        res.status(500).json({
+            error: error.message
+        });
+    }    
 }
 
 const createOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
@@ -71,9 +75,10 @@ const createOrder = async (req: Request, res: Response, next: NextFunction): Pro
                 error: 'Invalid product id.'
             });
         }                
-    } catch (error) {
-        console.log(error);
-        next();
+    } catch (error: any) {
+        res.status(500).json({
+            error: error.message
+        });
     } 
 }
 

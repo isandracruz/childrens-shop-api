@@ -33,8 +33,7 @@ export class UserService {
         return matchQuery.length > 0 ? { $and: matchQuery } : {};
     }
     
-    async getUsers(req: Request): Promise<AggregatePaginateResult<UserDocument>> {
-             
+    async getUsers(req: Request): Promise<AggregatePaginateResult<UserDocument>> {             
         const page = req.query.page ? Number(req.query.page) : 1;
         const limit = req.query.pageSize ? Number(req.query.pageSize) : 10;
 
@@ -59,8 +58,7 @@ export class UserService {
         return await userModel.aggregatePaginate(aggregate, options);           
     }
     
-    async getUserById (req: Request): Promise<UserDocument | null> {
-        const userId = req.params.id;        
+    async getUserById (userId: string): Promise<UserDocument | null> {               
         return await userModel.findById(userId);              
     } 
     
@@ -68,7 +66,7 @@ export class UserService {
         return await userModel.findOne({email: email});              
     } 
       
-    async updateUser(req: Request): Promise<UserDocument | null> {
+    async updateUser(req: Request): Promise<UserDocument | null> {        
         const userId = req.params.id;  
         return await userModel.findByIdAndUpdate(userId, req.body, {new: true});             
     }

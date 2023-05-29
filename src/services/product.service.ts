@@ -136,6 +136,8 @@ export class ProductService {
     }   
     
     async createProduct(req: Request): Promise<ProductDocument> {        
+        const exists = await productModel.exists({name: req.body.name});
+        console.log(exists);
         const newProduct = new productModel(req.body);
         return await newProduct.save();             
     }
@@ -153,8 +155,7 @@ export class ProductService {
         }                    
     }
       
-    async deleteProduct(req: Request): Promise<void | null>{
-        const productId = req.params.id;   
+    async deleteProduct(productId: string): Promise<void | null>{          
         return await productModel.findByIdAndRemove(productId);                 
     }
     
