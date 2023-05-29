@@ -14,7 +14,33 @@ const authRoutes = express.Router();
    *  post:
    *     tags:
    *     - Auth
-   *     summary: Sign up     
+   *     summary: Sign up  
+   *     requestBody:
+   *        required: true
+   *        content:
+   *           application/json:
+   *              schema:
+   *                 type: object
+   *                 required:
+   *                    - email
+   *                    - password
+   *                    - role       
+   *                 properties:
+   *                    email:
+   *                      type: string
+   *                      default: jane.doe@example.com
+   *                    username:
+   *                       type: string
+   *                       default: Jane Doe
+   *                    password:
+   *                       type: string
+   *                       default: stringPassword123
+   *                    role:
+   *                       type: string
+   *                       default: user 
+   *     responses:
+   *       200:
+   *         description: Success  
    */
 authRoutes.post('/signup', validateSignUp, signUp);
 
@@ -30,11 +56,20 @@ authRoutes.post('/signup', validateSignUp, signUp);
    *        content:
    *           application/json:
    *              schema:
-   *                 $ref: '#/components/schemas/SignIn'           
+   *                 type: object
+   *                 required:
+   *                    - email
+   *                    - password       
+   *                 properties:
+   *                    email:
+   *                       type: string
+   *                       default: jane.doe@example.com        
+   *                    password:
+   *                       type: string
+   *                       default: stringPassword123  
    *     responses:
-   *       '200':
-   *        description: successful operation
-   * 
+   *       200:
+   *         description: Success   
    */
 authRoutes.post('/signin', validateSignIn, signIn);
 

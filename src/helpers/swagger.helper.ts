@@ -6,7 +6,7 @@ const options = {
       info: {
         title: 'Children\'s Shop Api',
         version: '1.0.0',
-      },      
+      }, 
       components: {
         securitySchemes: {
           bearerAuth: {

@@ -26,21 +26,21 @@ const signUp = async (req: Request, res: Response, next: NextFunction): Promise<
 const signIn = async (req: Request, res: Response, next: NextFunction): Promise<void> =>  {
     try {   
         const errors = validationResult(req);
-        console.log(errors)   
+          
         if (!errors.isEmpty()) {
             res.status(422).json({ errors: errors.array() });
         } else {
             const result = await authService.signIn(req);
 
-            if (result) {
-                res.json(result)
-            } else {
-                res.status(400).json({ error: 'Request failed'});
-            }             
+            if (!result) {
+                throw new Error('Request failed');                
+            } 
+            res.json(result);            
         }     
-    } catch (error) {
-        console.log(error);
-        next();
+    } catch (error: any) {
+        res.status(500).json({
+            error: error.message
+        });
     }     
 }
 

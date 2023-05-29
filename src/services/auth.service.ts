@@ -42,7 +42,10 @@ export class AuthService {
                 );
 
                 return {
-                    data: user,
+                    data: {
+                        email: user.email,
+                        role: user.role
+                    },
                     token
                 }
             }

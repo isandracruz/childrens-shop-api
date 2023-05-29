@@ -18,26 +18,44 @@ const userRoutes = express.Router();
    *  get:
    *     tags:
    *     - Users
-   *     summary: Get list of users    
+   *     summary: Get list of users 
+   *     security:
+   *        - bearerAuth: [] 
+   *     parameters:
+   *      - name: username
+   *        in: query
+   *        type: string
+   *      - name: email
+   *        in: query
+   *        type: string
+   *      - name: role
+   *        in: query
+   *        type: string
+   *     responses:
+   *       200:
+   *         description: Success 
    */
 userRoutes.get('/users', checkRoleAuth(['administrator']), getUsers);
 
 /**
    * @openapi
-   * '/users/id':
+   * '/users/{userId}':
    *  get:
    *     tags:
    *     - Users
-   *     summary: Get user by ID  
+   *     summary: Get user by ID
+   *     security:
+   *        - bearerAuth: []  
    *     parameters:
    *      - in: path
-   *        name: id
+   *        name: userId
    *        required: true
    *        type: string
    *        description: The user ID.
-   *              
-   */
-  
+   *     responses:
+   *       200:
+   *         description: Success              
+   */  
 userRoutes.get('/users/:id', checkRoleAuth(['administrator']), validateMongoDBId, getUserById);
 
 /**
@@ -46,39 +64,96 @@ userRoutes.get('/users/:id', checkRoleAuth(['administrator']), validateMongoDBId
    *  post:
    *     tags:
    *     - Users
-   *     summary: Create a user  
+   *     summary: Create a user
+   *     security:
+   *        - bearerAuth: []    
+   *     requestBody:
+   *        required: true
+   *        content:
+   *           application/json:
+   *              schema:
+   *                 type: object
+   *                 required:
+   *                    - email
+   *                    - password
+   *                    - role       
+   *                 properties:
+   *                    email:
+   *                      type: string
+   *                      default: jane.doe@example.com
+   *                    username:
+   *                       type: string
+   *                       default: Jane Doe
+   *                    password:
+   *                       type: string
+   *                       default: stringPassword123
+   *                    role:
+   *                       type: string
+   *                       default: user 
+   *     responses:
+   *       200:
+   *         description: Success  
    */
 userRoutes.post('/users', checkRoleAuth(['administrator']), validateSignUp, signUp);
 
 /**
    * @openapi
-   * '/users/:id':
+   * '/users/{userId}':
    *  put:
    *     tags:
    *     - Users
    *     summary: Update a user 
+   *     security:
+   *        - bearerAuth: []  
    *     parameters:
    *      - in: path
-   *        name: id
+   *        name: userId
    *        required: true
    *        type: string
    *        description: The user ID. 
+   *     requestBody:
+   *        required: true
+   *        content:
+   *           application/json:
+   *              schema:
+   *                 type: object                       
+   *                 properties:
+   *                    email:
+   *                      type: string
+   *                      default: jane.doe@example.com
+   *                    username:
+   *                       type: string
+   *                       default: Jane Doe
+   *                    password:
+   *                       type: string
+   *                       default: stringPassword123
+   *                    role:
+   *                       type: string
+   *                       default: user
+   *     responses:
+   *       200:
+   *         description: Success  
    */
 userRoutes.put('/users/:id', checkRoleAuth(['administrator']), validateMongoDBId, updateUser);
 
 /**
    * @openapi
-   * '/users/:id':
+   * '/users/{userId}':
    *  delete:
    *     tags:
    *     - Users
    *     summary: Delete a user 
+   *     security:
+   *        - bearerAuth: []  
    *     parameters:
    *      - in: path
-   *        name: id
+   *        name: userId
    *        required: true
    *        type: string
    *        description: The user ID. 
+   *     responses:
+   *       200:
+   *         description: Success  
    */
 userRoutes.delete('/users/:id', checkRoleAuth(['administrator']), validateMongoDBId, deleteUser);
 

@@ -56,10 +56,15 @@ export class ProductService {
             }           
         };
 
+        const query = this.getProductMatchQuery(req);        
+
         const aggregate = productModel.aggregate([                                      
             { 
                 $match: {
-                    inStock: 0
+                    $and: [
+                        {...query },
+                        { inStock: 0 }
+                    ]                    
                 } 
             }
         ]);
