@@ -25,8 +25,6 @@ To use MongoDB from the docker service, the URI host must be mongodb.
 DB_URI=mongodb://mongodb:27017/childernss-shop
 ```
 
-## Running the app
-
 ## Running the app in localhost
 
 ```bash
