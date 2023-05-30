@@ -55,4 +55,5 @@ $ docker-compose up
 
 The API is documented. The documentation can be accessed in the path `/api`. For example: 
 ```
-http://localhost:3004/api```
+http://localhost:3004/api
+```
