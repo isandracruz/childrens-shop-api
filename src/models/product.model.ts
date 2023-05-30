@@ -4,6 +4,10 @@ import { productSchema } from "../schemas/product.schema";
 
 export type ProductDocument = ProductClass & Document;
 
-const productModel = mongoose.model("Products", productSchema, 'products');
+const productModel = mongoose.model(
+    "Products",
+    productSchema,
+    'products'
+);
 
 export { productModel };

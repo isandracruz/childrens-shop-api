@@ -21,6 +21,9 @@ const orderRoutes = express.Router();
    *     security:
    *        - bearerAuth: [] 
    *     parameters:
+   *      - name: sku
+   *        in: query
+   *        type: string
    *      - name: productId
    *        in: query
    *        type: string
@@ -48,6 +51,9 @@ orderRoutes.get('/orders', checkAuth, getOrders);
    *     security:
    *        - bearerAuth: []
    *     parameters:
+   *      - name: sku
+   *        in: query
+   *        type: string
    *      - name: productId
    *        in: query
    *        type: string
@@ -75,6 +81,9 @@ orderRoutes.get('/orders/get-sales-report', checkAuth, getSalesReport);
    *     security:
    *        - bearerAuth: [] 
    *     parameters:
+   *      - name: sku
+   *        in: query
+   *        type: string
    *      - name: productId
    *        in: query
    *        type: string

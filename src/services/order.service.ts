@@ -59,7 +59,8 @@ export class OrderService {
             {
                 $group: {
                     _id: {
-                      productName: "$product.name",                      
+                      productName: "$product.name", 
+                      productSku: "$product.sku",                      
                       inStock: "$product.inStock"                      
                     },
                     totalQuantity: { $sum: "$quantity" },
@@ -104,7 +105,18 @@ export class OrderService {
     }
 
     getOrderMatchQuery(req: Request) {
-        let matchQuery = [];               
+        let matchQuery = []; 
+        
+        if (req.query.sku) {
+            const skuQuery = String(req.query.sku)
+            .replace(/a/g, '[a,á,à,ä,â]')
+            .replace(/e/g, '[e,é,ë,è]')
+            .replace(/i/g, '[i,í,ï,ì]')
+            .replace(/o/g, '[o,ó,ö,ò]')
+            .replace(/u/g, '[u,ü,ú,ù]');           
+
+            matchQuery.push({ sku: {$regex: new RegExp(`.*${skuQuery}.*`, 'gi')} });
+        } 
                   
         if (req.query.productId) {
             mongoose.Types.ObjectId.isValid(String(req.query.productId))

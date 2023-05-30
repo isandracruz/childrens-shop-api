@@ -73,7 +73,18 @@ export class ProductService {
     }
 
     getProductMatchQuery(req: Request) {
-        let matchQuery = [];        
+        let matchQuery = []; 
+        
+        if (req.query.sku) {
+            const skuQuery = String(req.query.sku)
+            .replace(/a/g, '[a,á,à,ä,â]')
+            .replace(/e/g, '[e,é,ë,è]')
+            .replace(/i/g, '[i,í,ï,ì]')
+            .replace(/o/g, '[o,ó,ö,ò]')
+            .replace(/u/g, '[u,ü,ú,ù]');           
+
+            matchQuery.push({ sku: {$regex: new RegExp(`.*${skuQuery}.*`, 'gi')} });
+        } 
 
         if (req.query.name) {
             const nameQuery = String(req.query.name)
@@ -141,8 +152,10 @@ export class ProductService {
     }   
     
     async createProduct(req: Request): Promise<ProductDocument> {        
-        const exists = await productModel.exists({name: req.body.name});
-        console.log(exists);
+        const productExists = await productModel.exists({ sku: req.body.sku});
+        if (productExists) {
+            throw new Error('The product exists');
+        }
         const newProduct = new productModel(req.body);
         return await newProduct.save();             
     }

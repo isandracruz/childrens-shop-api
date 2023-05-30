@@ -9,7 +9,7 @@ connection.once('open', () => {
   console.log('Mongodb connection stablished');
 });
 
-connection.on('error', (err) => {
-  console.log('Mongodb connection error:', err);
+connection.on('error', (error) => {
+  console.log('Mongodb connection error:', error.message);
   process.exit();
 });

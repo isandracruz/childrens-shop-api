@@ -1,6 +1,14 @@
 import { checkSchema} from "express-validator";
 
-const schema = {    
+const schema = { 
+    sku: { 
+        notEmpty: {
+            errorMessage: 'Product sku is required',
+        },
+        isString: {
+            errorMessage: 'Product sku must be a string',
+        }
+    },   
     name: { 
         notEmpty: {
             errorMessage: 'Product name is required',

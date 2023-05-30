@@ -3,6 +3,10 @@ import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 import { ProductClass } from "../classes/product.class";
 
 const productSchema = new mongoose.Schema({
+    sku: {
+        type: String,
+        require: true
+    },
     name: {
         type: String,
         require: true

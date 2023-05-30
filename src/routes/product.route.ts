@@ -24,6 +24,9 @@ const productRoutes = express.Router();
    *     security:
    *        - bearerAuth: [] 
    *     parameters:
+   *      - name: sku
+   *        in: query
+   *        type: string
    *      - name: name
    *        in: query
    *        type: string
@@ -71,6 +74,9 @@ productRoutes.get('/products', checkAuth, getProducts);
    *     security:
    *        - bearerAuth: []
    *     parameters:
+   *      - name: sku
+   *        in: query
+   *        type: string
    *      - name: name
    *        in: query
    *        type: string
@@ -118,6 +124,9 @@ productRoutes.get('/products/get-quantity-of-products', checkAuth, getQuantityOf
    *     security:
    *        - bearerAuth: []
    *     parameters:
+   *      - name: sku
+   *        in: query
+   *        type: string
    *      - name: name
    *        in: query
    *        type: string
@@ -192,10 +201,14 @@ productRoutes.get('/products/:id', checkAuth, validateMongoDBId, getProductById)
    *              schema:
    *                 type: object
    *                 required:
+   *                    - sku
    *                    - name
    *                    - price
    *                    - inStock       
    *                 properties:
+   *                    sku:
+   *                      type: string
+   *                      default: XYZ12345
    *                    name:
    *                      type: string
    *                      default: Orange

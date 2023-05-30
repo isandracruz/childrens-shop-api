@@ -1,0 +1,7 @@
+{
+  "clearMocks": true,  
+  "coverageProvider": "v8",
+  "modulePathIgnorePatterns": ["<rootDir>/dist/"],  
+  "preset": "ts-jest",  
+  "verbose": true
+}
